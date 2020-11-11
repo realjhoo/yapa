@@ -1,11 +1,15 @@
 <template>
-  <div>Check marks go here</div>
+  <div>
+    <p class="temp">Check marks go here</p>
+  </div>
 </template>
 
 <script>
-export default {
-  name: "Checks",
-};
+export default {};
 </script>
 
-<style></style>
+<style>
+.temp {
+  color: #fff;
+}
+</style>

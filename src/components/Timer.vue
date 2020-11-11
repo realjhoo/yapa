@@ -12,28 +12,49 @@
       <p class="work-break-text">{{ workBreak }}</p>
     </radial-progress-bar>
     <br />
-    <button class="start-button">Start</button>
+    <button @click="completedSteps = xtest" class="start-button">Start</button>
   </div>
 </template>
 
+// ***********************************
 <script>
 import RadialProgressBar from "vue-radial-progress";
+
+function xtest() {
+  console.log("test");
+  // this.timeRemaining = 10;
+  // return 10;
+}
 
 export default {
   data() {
     return {
-      timeRemaining: "21:39",
+      timeRemaining: "21:35",
       workBreak: "Work",
       totalSteps: 100,
-      completedSteps: 50,
+      completedSteps: 0,
       innerStrokeColor: "#1f1f1f",
+      timerCount: 30,
     };
   },
+  // computed: {
+  //   xtest: function() {
+  //     let y = 0;
+  //     for (let i = 0; i < 100; i++) {
+  //       // ********** CODE GOES HERE I THINK *******
+  //       y++;
+  //     }
+  //     console.log("Test output: ", y);
+  //     // this.countdown;
+  //     return y;
+  //   },
+  // },
 
   components: {
     RadialProgressBar,
   },
 };
+xtest();
 </script>
 
 <style>
