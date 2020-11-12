@@ -12,7 +12,7 @@
       <p class="work-break-text">{{ workBreak }}</p>
     </radial-progress-bar>
     <br />
-    <button @click="completedSteps = xtest" class="start-button">Start</button>
+    <button class="start-button" @click="startTimer">Start</button>
   </div>
 </template>
 
@@ -20,11 +20,11 @@
 <script>
 import RadialProgressBar from "vue-radial-progress";
 
-function xtest() {
-  console.log("test");
-  // this.timeRemaining = 10;
-  // return 10;
-}
+// function xtest() {
+// console.log("test");
+// this.timeRemaining = 10;
+// return 10;
+// }
 
 export default {
   data() {
@@ -36,6 +36,15 @@ export default {
       innerStrokeColor: "#1f1f1f",
       timerCount: 30,
     };
+  },
+  methods: {
+    start() {
+      this.timeRemaining = "15:20";
+      console.log("this works tho");
+    },
+    startTimer() {
+      this.timeRemaining = setInterval(() => (this.completedSteps += 1), 1000);
+    },
   },
   // computed: {
   //   xtest: function() {
@@ -54,10 +63,10 @@ export default {
     RadialProgressBar,
   },
 };
-xtest();
+// xtest();
 </script>
 
-<style>
+<style scoped>
 .timer-container {
   margin-top: 6rem;
   margin-bottom: 6rem;
@@ -77,7 +86,7 @@ xtest();
   color: var(--secondary-color);
 }
 
-.start-button {
+/* .start-button {
   margin-left: 6rem;
   padding: 10px 20px;
   border-radius: 30px;
@@ -85,5 +94,6 @@ xtest();
   color: var(--primary-color);
   background-color: var(--secondary-color);
   font-weight: bold;
-}
+  outline: none;
+} */
 </style>

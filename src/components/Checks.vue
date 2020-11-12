@@ -11,5 +11,6 @@ export default {};
 <style>
 .temp {
   color: #fff;
+  height: 15rem;
 }
 </style>

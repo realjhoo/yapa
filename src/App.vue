@@ -1,24 +1,27 @@
 <template>
   <div id="app">
     <Header />
-    <Timer />
-    <Countdown />
+    <YapaTimer />
+    <!-- <Countdown /> -->
+    <!-- <Timer /> -->
     <Checks />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
-import Timer from "./components/Timer";
-import Countdown from "./components/Countdown";
+// import Timer from "./components/Timer";
+// import Countdown from "./components/Countdown";
 import Checks from "./components/Checks";
+import YapaTimer from "./components/yapaTimer";
 export default {
   name: "App",
 
   components: {
     Header,
-    Timer,
-    Countdown,
+    YapaTimer,
+    // Timer,
+    // Countdown,
     Checks,
   },
 
