@@ -20,15 +20,17 @@
         ></path>
       </g>
     </svg>
-    <span class="countdown__label">{{ formattedTimeLeft }}</span>
-    <span class="work-break__label">Work</span>
+
+    <span class="countdown__label">{{ formattedTimeRemaining }}</span>
+    <span class="work-break__label">{{ workBreak }}</span>
     <br />
-    <button @click="startTimer" class="start-button">{{ startStop }}</button>
+
+    <button @click="startPomodoro" class="start-button">{{ startStop }}</button>
   </div>
 </template>
 
 <script>
-const FULL_DASH_ARRAY = 283;
+const FULL_DASH_ARRAY = 283; // 283
 const WARNING_THRESHOLD = 30; // set to 150 sec -> 2:30
 const ALERT_THRESHOLD = 10; // set to 60 sec
 
@@ -46,14 +48,18 @@ const COLOR_CODES = {
   },
 };
 
-const TIME_LIMIT = 90;
+//  sets the initial time in seconds
+const TIME_LIMIT = 20; //25min = 1500s
 
 export default {
   data() {
     return {
-      timePassed: 0,
+      timeElapsed: 0,
       timerInterval: null,
       startStop: "Start",
+      workBreak: null,
+      pomodoro: 1,
+      checky: false,
     };
   },
 
@@ -62,10 +68,11 @@ export default {
       return `${(this.timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`;
     },
 
-    formattedTimeLeft() {
-      const timeLeft = this.timeLeft;
-      const minutes = Math.floor(timeLeft / 60);
-      let seconds = timeLeft % 60;
+    // ====================================================
+    formattedTimeRemaining() {
+      const timeRemaining = this.timeRemaining;
+      const minutes = Math.floor(timeRemaining / 60);
+      let seconds = timeRemaining % 60;
 
       if (seconds < 10) {
         seconds = `0${seconds}`;
@@ -74,21 +81,24 @@ export default {
       return `${minutes}:${seconds}`;
     },
 
-    timeLeft() {
-      return TIME_LIMIT - this.timePassed;
+    // ====================================================
+    timeRemaining() {
+      return TIME_LIMIT - this.timeElapsed;
     },
 
+    // ====================================================
     timeFraction() {
-      const rawTimeFraction = this.timeLeft / TIME_LIMIT;
+      const rawTimeFraction = this.timeRemaining / TIME_LIMIT;
       return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
     },
 
+    // ====================================================
     remainingPathColor() {
       const { alert, warning, info } = COLOR_CODES;
 
-      if (this.timeLeft <= alert.threshold) {
+      if (this.timeRemaining <= alert.threshold) {
         return alert.color;
-      } else if (this.timeLeft <= warning.threshold) {
+      } else if (this.timeRemaining <= warning.threshold) {
         return warning.color;
       } else {
         return info.color;
@@ -97,7 +107,7 @@ export default {
   },
 
   watch: {
-    timeLeft(newValue) {
+    timeRemaining(newValue) {
       if (newValue === 0) {
         this.onTimesUp();
       }
@@ -109,12 +119,93 @@ export default {
   // },
 
   methods: {
-    onTimesUp() {
-      clearInterval(this.timerInterval);
+    // ====================================================
+    isOdd(num) {
+      return num % 2 === 1;
+    },
+    // ====================================================
+    startPomodoro() {
+      // make sure label says "Work" when we start
+      // if (this.pomodoro === 1) {
+      //   this.workBreak = "Work";
+      // }
+      if (this.startStop === "Start") {
+        this.startStop = "Stop";
+        this.workBreak = "Work";
+        this.startTimer();
+      } else {
+        // reset stuff
+        this.startStop = "Start";
+        this.workBreak = null;
+        this.pomodoro = 9;
+        this.onTimesUp();
+        this.timeElapsed = 0;
+        // set timer to 25m
+      }
     },
 
+    // ====================================================
+    onTimesUp() {
+      clearInterval(this.timerInterval);
+      //
+      this.pomodoro++;
+      // console.log("checky: ", this.checky);
+      // if (this.checky == false) {
+      // this.checky = true;
+      // console.log(this.checky);
+      // this.checkOrNoCheck = "checked";
+      // }
+
+      // console.log(this.pomodoro);
+      // if pomo is odd
+      if (this.isOdd(this.pomodoro)) {
+        if (this.pomodoro <= 7) {
+          this.workBreak = "Work";
+          // -- set timer to 25min
+          // -- add a check
+          // ---- cuz if that works, the svg will obviously work
+          // ---- should I move button text etc to here?
+          // -- startTimer()
+        }
+        // if pomo = 9, we're done
+        if (this.pomodoro === 9) {
+          this.pomodoro = 1;
+          // -- timer to 25
+          this.workBreak = "Complete";
+          this.startStop = "Start";
+          // -- dont restart the timer tho
+          // ***** HOW CHANGE VALUE IN DIFFERENT COMPONENT???
+        }
+      }
+      // if pomo is even -> BREAK
+      if (!this.isOdd(this.pomodoro)) {
+        console.log("???");
+        if (this.pomodoro <= 6) {
+          this.workBreak = "Break";
+          // -- set timer to 5 min
+          // -- add a check
+          // -- startTimer()
+        }
+        // if pomo = 8 -> LONG BREAK
+        if (this.pomodoro === 8) {
+          this.workBreak = "Rest";
+          // -- timer to 15
+          // -- add a check
+          // -- startTimer()
+        }
+      }
+      // if pomo = 10 -> reset for another cycle
+      if (this.pomodoro === 10) {
+        // *** RESET ***
+        this.workBreak = null;
+        // timer to 25
+        // remove checks
+      }
+    },
+
+    // ====================================================
     startTimer() {
-      this.timerInterval = setInterval(() => (this.timePassed += 1), 1000);
+      this.timerInterval = setInterval(() => (this.timeElapsed += 1), 1000);
     },
   },
 };
@@ -126,6 +217,7 @@ export default {
   background-color: var(--primary-color);
   margin-left: 50%;
   transform: translate(-50%);
+  margin-bottom: 7rem;
 }
 
 .countdown {
@@ -139,17 +231,20 @@ export default {
 }
 
 .countdown__circle {
-  fill: none;
+  /* fill: none; */
+  fill: var(--tertiary-color);
   stroke: none;
+  /* stroke: black; */
 }
 
 .countdown__path-elapsed {
   stroke-width: 3px;
-  stroke: grey;
+  /* stroke: grey; */
+  stroke: black;
 }
 
 .countdown__path-remaining {
-  stroke-width: 3px;
+  stroke-width: 2px;
   stroke-linecap: round;
   transform: rotate(90deg);
   transform-origin: center;
@@ -159,15 +254,15 @@ export default {
 }
 
 .green {
-  color: rgb(65, 184, 131);
+  color: #41b882;
 }
 
 .orange {
-  color: orange;
+  color: goldenrod;
 }
 
 .red {
-  color: var(--tertiary-color);
+  color: darkred;
 }
 
 .countdown__label {
@@ -197,15 +292,17 @@ export default {
   /* height: 300px; */
   font-family: "Syne", sans-serif;
   font-size: 3rem;
-  background-color: pink;
+  /* background-color: pink; */
 }
 
-button {
+/* button {
   font-size: 2rem;
-}
+} */
 
 .start-button {
-  margin-left: 6rem;
+  /* margin-left: 6rem; */
+  margin-left: 50%;
+  transform: translate(-50%);
   padding: 10px 20px;
   border-radius: 30px;
   font-size: 2rem;

@@ -14,21 +14,19 @@ export default {
 <style>
 .container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
-  background-color: var(--primary-color);
+  padding-top: 1rem;
+  padding-bottom: 0.1rem;
   color: var(--secondary-color);
 }
 
 .tomato {
   height: 4rem;
-  margin-left: 50%;
-  transform: translate(-230%);
 }
 
 h1 {
   font-size: 5rem;
-  margin-left: -8.5rem;
+  padding-left: 1rem;
 }
 </style>
