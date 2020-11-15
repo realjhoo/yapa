@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="check-container">
-      <div class="check1" :class="checkStatus1">
+      <div class="check">
         <svg
           class="checkmark"
           xmlns="http://www.w3.org/2000/svg"
@@ -22,49 +22,7 @@
         </svg>
       </div>
 
-      <div class="check2" :class="checkStatus2">
-        <svg
-          class="checkmark"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 52 52"
-        >
-          <circle
-            class="checkmark__circle"
-            cx="26"
-            cy="26"
-            r="25"
-            fill="none"
-          />
-          <path
-            class="checkmark__check"
-            fill="none"
-            d="M14.1 27.2l7.1 7.2 16.7-16.8"
-          />
-        </svg>
-      </div>
-
-      <div class="check3" :class="checkStatus3">
-        <svg
-          class="checkmark"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 52 52"
-        >
-          <circle
-            class="checkmark__circle"
-            cx="26"
-            cy="26"
-            r="25"
-            fill="none"
-          />
-          <path
-            class="checkmark__check"
-            fill="none"
-            d="M14.1 27.2l7.1 7.2 16.7-16.8"
-          />
-        </svg>
-      </div>
-
-      <div class="check4" :class="checkStatus4">
+      <div class="check">
         <svg
           class="checkmark"
           xmlns="http://www.w3.org/2000/svg"
@@ -85,25 +43,14 @@
         </svg>
       </div>
     </div>
-    <div class="complete">{{ message }}</div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      message: "Pomodoro Complete",
-      checkStatus1: "checked",
-      checkStatus2: "checked",
-      checkStatus3: "checked",
-      checkStatus4: "checked",
-    };
-  },
-};
+export default {};
 </script>
 
-<style>
+<style scoped>
 .check-container {
   color: var(--tertiary-color);
   padding-bottom: 2rem;
@@ -113,37 +60,8 @@ export default {
   justify-content: space-around;
 }
 
-.check1 {
-  display: flex;
-  justify-content: center;
-}
-
-.check2 {
-  display: flex;
-  justify-content: center;
-}
-
-.check3 {
-  display: flex;
-  justify-content: center;
-}
-
-.check4 {
-  display: flex;
-  justify-content: center;
-}
-
 span {
   margin: 0 5px;
-}
-
-.complete {
-  color: var(--tertiary-color);
-  padding-top: 0.1rem;
-  padding-bottom: 1rem;
-  font-size: 3rem;
-  text-align: center;
-  /* margin-top: 1rem; */
 }
 
 /* SVG STARTS HERE */

@@ -26,10 +26,24 @@
     <br />
 
     <button @click="startPomodoro" class="start-button">{{ startStop }}</button>
+    <component :is="currentCheckState"></component>
   </div>
 </template>
 
 <script>
+import Check0 from "./check0";
+import Check1 from "./check1";
+import Check2 from "./check2";
+import Check3 from "./check3";
+import Check4 from "./check4";
+
+// set time params in seconds
+const WORK_TIME = 1500; // 15min
+const BREAK_TIME = 300; // 5min
+const LONG_BREAK_TIME = 900; // 15min
+
+let timeLimit = WORK_TIME;
+
 const FULL_DASH_ARRAY = 283; // 283
 const WARNING_THRESHOLD = 30; // set to 150 sec -> 2:30
 const ALERT_THRESHOLD = 10; // set to 60 sec
@@ -43,15 +57,19 @@ const COLOR_CODES = {
     threshold: WARNING_THRESHOLD,
   },
   alert: {
-    color: "red",
+    color: "white",
     threshold: ALERT_THRESHOLD,
   },
 };
 
-//  sets the initial time in seconds
-const TIME_LIMIT = 20; //25min = 1500s
-
 export default {
+  components: {
+    Check0,
+    Check1,
+    Check2,
+    Check3,
+    Check4,
+  },
   data() {
     return {
       timeElapsed: 0,
@@ -59,11 +77,13 @@ export default {
       startStop: "Start",
       workBreak: null,
       pomodoro: 1,
-      checky: false,
+      currentCheckState: "Check0",
+      checkcount: 0,
     };
   },
 
   computed: {
+    // ====================================================
     circleDasharray() {
       return `${(this.timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`;
     },
@@ -83,13 +103,13 @@ export default {
 
     // ====================================================
     timeRemaining() {
-      return TIME_LIMIT - this.timeElapsed;
+      return timeLimit - this.timeElapsed;
     },
 
     // ====================================================
     timeFraction() {
-      const rawTimeFraction = this.timeRemaining / TIME_LIMIT;
-      return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+      const rawTimeFraction = this.timeRemaining / timeLimit;
+      return rawTimeFraction - (1 / timeLimit) * (1 - rawTimeFraction);
     },
 
     // ====================================================
@@ -106,6 +126,7 @@ export default {
     },
   },
 
+  // ======================================================
   watch: {
     timeRemaining(newValue) {
       if (newValue === 0) {
@@ -114,33 +135,36 @@ export default {
     },
   },
 
-  // mounted() {
-  //   this.startTimer();
-  // },
-
   methods: {
     // ====================================================
     isOdd(num) {
-      return num % 2 === 1;
+      return num % 2 === 1; // true if odd false if even
     },
+
     // ====================================================
     startPomodoro() {
-      // make sure label says "Work" when we start
-      // if (this.pomodoro === 1) {
-      //   this.workBreak = "Work";
-      // }
+      //
       if (this.startStop === "Start") {
         this.startStop = "Stop";
         this.workBreak = "Work";
+        this.pomodoro = 1;
+        this.checkcount = 0;
         this.startTimer();
-      } else {
-        // reset stuff
+        //
+      } else if (this.startStop === "Stop") {
         this.startStop = "Start";
         this.workBreak = null;
-        this.pomodoro = 9;
-        this.onTimesUp();
         this.timeElapsed = 0;
-        // set timer to 25m
+        timeLimit = WORK_TIME;
+        this.pomodoro = 9; // triggers reset
+        this.onTimesUp();
+      }
+
+      if (this.startStop === "Reset") {
+        this.startStop = "Start";
+        this.workBreak = null;
+        this.pomodoro = 0;
+        this.currentCheckState = "Check0";
       }
     },
 
@@ -149,63 +173,77 @@ export default {
       clearInterval(this.timerInterval);
       //
       this.pomodoro++;
-      // console.log("checky: ", this.checky);
-      // if (this.checky == false) {
-      // this.checky = true;
-      // console.log(this.checky);
-      // this.checkOrNoCheck = "checked";
-      // }
-
-      // console.log(this.pomodoro);
-      // if pomo is odd
+      // *** WORK ODD ***
       if (this.isOdd(this.pomodoro)) {
         if (this.pomodoro <= 7) {
-          this.workBreak = "Work";
-          // -- set timer to 25min
-          // -- add a check
-          // ---- cuz if that works, the svg will obviously work
-          // ---- should I move button text etc to here?
-          // -- startTimer()
+          this.setWork();
         }
-        // if pomo = 9, we're done
+        // *** COMPLETE ***
         if (this.pomodoro === 9) {
-          this.pomodoro = 1;
-          // -- timer to 25
-          this.workBreak = "Complete";
-          this.startStop = "Start";
-          // -- dont restart the timer tho
-          // ***** HOW CHANGE VALUE IN DIFFERENT COMPONENT???
+          this.setComplete();
         }
       }
-      // if pomo is even -> BREAK
+      // *** BREAK EVEN ***
       if (!this.isOdd(this.pomodoro)) {
-        console.log("???");
         if (this.pomodoro <= 6) {
-          this.workBreak = "Break";
-          // -- set timer to 5 min
-          // -- add a check
-          // -- startTimer()
+          this.setBreak();
         }
-        // if pomo = 8 -> LONG BREAK
+        // *** LONG BREAK ***
         if (this.pomodoro === 8) {
-          this.workBreak = "Rest";
-          // -- timer to 15
-          // -- add a check
-          // -- startTimer()
+          this.setRest();
         }
-      }
-      // if pomo = 10 -> reset for another cycle
-      if (this.pomodoro === 10) {
-        // *** RESET ***
-        this.workBreak = null;
-        // timer to 25
-        // remove checks
+        if (this.pomodoro === 10) {
+          // *** RESET ***
+          this.resetCheck();
+        }
       }
     },
 
     // ====================================================
     startTimer() {
       this.timerInterval = setInterval(() => (this.timeElapsed += 1), 1000);
+    },
+
+    // ======================================================
+    setWork() {
+      this.workBreak = "Work";
+      this.timeElapsed = 0;
+      timeLimit = WORK_TIME;
+      this.startTimer();
+    },
+
+    // ======================================================
+    setBreak() {
+      this.checkcount++;
+      this.currentCheckState = "Check" + this.checkcount;
+      this.workBreak = "Break";
+      this.timeElapsed = 0;
+      timeLimit = BREAK_TIME;
+      this.startTimer();
+    },
+
+    // ======================================================
+    setRest() {
+      this.checkcount++;
+      this.currentCheckState = "Check" + this.checkcount;
+      this.workBreak = "Rest";
+      this.timeElapsed = 0;
+      timeLimit = LONG_BREAK_TIME;
+      this.startTimer();
+    },
+
+    // ======================================================
+    setComplete() {
+      this.pomodoro = 1;
+      timeLimit = WORK_TIME;
+      this.timeElapsed = 0;
+      this.workBreak = "Complete";
+      this.startStop = "Reset";
+    },
+
+    // ====================================================
+    resetChecks() {
+      this.currentCheckState = "Check0";
     },
   },
 };
@@ -231,15 +269,12 @@ export default {
 }
 
 .countdown__circle {
-  /* fill: none; */
   fill: var(--tertiary-color);
   stroke: none;
-  /* stroke: black; */
 }
 
 .countdown__path-elapsed {
   stroke-width: 3px;
-  /* stroke: grey; */
   stroke: black;
 }
 
@@ -261,8 +296,8 @@ export default {
   color: goldenrod;
 }
 
-.red {
-  color: darkred;
+.white {
+  color: #fff;
 }
 
 .countdown__label {
@@ -274,7 +309,6 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 48px;
-  /* color: #fff; */
   font-family: "Syne Mono", monospace;
   font-size: 5rem;
   color: var(--secondary-color);
@@ -288,19 +322,11 @@ export default {
   transform: translate(-50%);
   align-items: center;
   justify-content: center;
-  /* width: 300px; */
-  /* height: 300px; */
   font-family: "Syne", sans-serif;
   font-size: 3rem;
-  /* background-color: pink; */
 }
 
-/* button {
-  font-size: 2rem;
-} */
-
 .start-button {
-  /* margin-left: 6rem; */
   margin-left: 50%;
   transform: translate(-50%);
   padding: 10px 20px;

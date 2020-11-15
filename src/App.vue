@@ -2,28 +2,28 @@
   <div id="app">
     <Header />
     <YapaTimer />
-    <!-- <Countdown /> -->
-    <!-- <Timer /> -->
-    <Checks />
+    <component :is="currentCheckStat"></component>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
-// import Timer from "./components/Timer";
-// import Countdown from "./components/Countdown";
-import Checks from "./components/Checks";
+// import Checks from "./components/Checks";
 import YapaTimer from "./components/yapaTimer";
+import Footer from "./components/Footer";
+// import Check0 from "./components/check0";
+// import Check1 from "./components/check1";
+//
 export default {
   name: "App",
 
   components: {
     Header,
     YapaTimer,
-    // Timer,
-    // Countdown,
-    Checks,
+    Footer,
   },
+  //
 };
 </script>
 
@@ -49,6 +49,15 @@ export default {
   font-family: "Syne", sans-serif;
   margin: 0;
   padding: 0;
+  background-color: var(--primary-color);
+  /* width: 500px; */
+  /* height: 600px; */
+  /* max-height: 600px; */
+  /* min-height: 600px; */
+  /* overflow: hidden; */
+}
+
+body {
   background-color: var(--primary-color);
 }
 </style>
