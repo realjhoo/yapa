@@ -60,10 +60,6 @@ export default {};
   justify-content: space-around;
 }
 
-span {
-  margin: 0 5px;
-}
-
 /* SVG STARTS HERE */
 
 .checkmark {
@@ -77,12 +73,6 @@ span {
   box-shadow: inset 0px 0px 0px var(--check-green);
   animation: fill 0.4s ease-in-out 0.4s forwards,
     scale 0.3s ease-in-out 0.9s both;
-  /*  HIDE THE CHECK, MATE */
-  /* display: none; */
-}
-
-.not-checked {
-  display: none;
 }
 
 .checkmark__circle {

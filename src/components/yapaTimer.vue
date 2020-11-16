@@ -45,8 +45,8 @@ const LONG_BREAK_TIME = 900; // 15min
 let timeLimit = WORK_TIME;
 
 const FULL_DASH_ARRAY = 283; // 283
-const WARNING_THRESHOLD = 30; // set to 150 sec -> 2:30
-const ALERT_THRESHOLD = 10; // set to 60 sec
+const WARNING_THRESHOLD = 150; // set to 150 sec -> 2:30
+const ALERT_THRESHOLD = 60; // set to 60 sec
 
 const COLOR_CODES = {
   info: {

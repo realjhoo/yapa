@@ -2,19 +2,15 @@
   <div id="app">
     <Header />
     <YapaTimer />
-    <component :is="currentCheckStat"></component>
     <Footer />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
-// import Checks from "./components/Checks";
 import YapaTimer from "./components/yapaTimer";
 import Footer from "./components/Footer";
-// import Check0 from "./components/check0";
-// import Check1 from "./components/check1";
-//
+
 export default {
   name: "App",
 
@@ -23,7 +19,6 @@ export default {
     YapaTimer,
     Footer,
   },
-  //
 };
 </script>
 
@@ -50,11 +45,6 @@ export default {
   margin: 0;
   padding: 0;
   background-color: var(--primary-color);
-  /* width: 500px; */
-  /* height: 600px; */
-  /* max-height: 600px; */
-  /* min-height: 600px; */
-  /* overflow: hidden; */
 }
 
 body {
