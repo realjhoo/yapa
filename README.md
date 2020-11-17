@@ -1,4 +1,4 @@
-# yapa - Yet Anoth Pomodor App
+# yapa - Yet Another Pomodor App
 
 ## Project setup
 ```
